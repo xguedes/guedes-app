@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TheWall</title>
+<!-- Icono y modo «app» del iPhone -->
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icono-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TheWall">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b6e8a">
+<style>
+  :root { color-scheme: light; }
+  html, body { margin: 0; height: 100%; background: #0b6e8a; overflow: hidden; }
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #f4f6f7;
+           padding-top: env(safe-area-inset-top); box-sizing: border-box; }
+  #aviso { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 24px;
+           color: #fff; font: 17px -apple-system, system-ui, sans-serif; text-align: center; }
+</style>
+</head>
+<body>
+<div id="aviso"></div>
+<script>
+  // Dirección de la app de Google Apps Script (la que termina en /exec)
+  const APP = 'https://script.google.com/macros/s/AKfycby5Mv9_CvS0a5irkCQA8AcAefiU4mofHdDj0acF6sLZxOPdpU6zMZ_kURO958lfN2Q5iA/exec';
+
+  // El código de acceso llega en el enlace personal (?k=CODIGO) y se recuerda en este iPhone
+  const k = new URLSearchParams(location.search).get('k') || '';
+  try { if (k) localStorage.setItem('k', k); } catch (e) {}
+  let clave = k;
+  try { clave = k || localStorage.getItem('k') || ''; } catch (e) {}
+
+  if (!/^https:\/\/script\.google\.com\//.test(APP)) {
+    const a = document.getElementById('aviso');
+    a.textContent = 'Falta configurar la dirección de la app.';
+    a.style.display = 'flex';
+  } else {
+    const f = document.createElement('iframe');
+    f.src = APP + (clave ? '?k=' + encodeURIComponent(clave) : '');
+    f.allow = 'camera; microphone; clipboard-write; fullscreen';
+    f.title = 'The Guedes App';
+    document.body.appendChild(f);
+  }
+</script>
+</body>
+</html>
